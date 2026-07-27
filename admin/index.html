@@ -607,6 +607,7 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-container').classList.add('visible');
                 loadData();
+                activateTab(window.location.hash.replace('#', ''));
             } else {
                 document.getElementById('login-screen').style.display = 'flex';
                 document.getElementById('admin-container').classList.remove('visible');
@@ -675,18 +676,30 @@
         }
 
         // --------------------------------------------------------
-        // UI & NAVIGATION
+        // UI & NAVIGATION (Hash Routing)
         // --------------------------------------------------------
         document.querySelectorAll('.nav-btn').forEach(btn => {
             if (btn.hasAttribute('data-target')) {
                 btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
                     const target = e.target.getAttribute('data-target');
-                    document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-                    document.getElementById(target).classList.add('active');
+                    window.location.hash = target; // Change URL hash
                 });
             }
+        });
+
+        function activateTab(target) {
+            if (!target) target = 'dashboard';
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.querySelector(`.nav-btn[data-target="${target}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            const activeSec = document.getElementById(target);
+            if (activeSec) activeSec.classList.add('active');
+        }
+
+        window.addEventListener('hashchange', () => {
+            activateTab(window.location.hash.replace('#', ''));
         });
 
         // --------------------------------------------------------
